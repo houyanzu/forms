@@ -7,6 +7,7 @@ package forms
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -264,6 +265,19 @@ func (d Data) GetFileBytes(key string) ([]byte, error) {
 			return nil, err
 		}
 		return ioutil.ReadAll(file)
+	}
+}
+
+func (d Data) GetFileReader(key string) (io.Reader, error) {
+	fileHeader, found := d.Files[key]
+	if !found {
+		return nil, nil
+	} else {
+		file, err := fileHeader.Open()
+		if err != nil {
+			return nil, err
+		}
+		return file, nil
 	}
 }
 
